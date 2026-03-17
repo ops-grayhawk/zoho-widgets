@@ -59,13 +59,15 @@
             document.getElementById("status").innerText = "Starting cadence...";
             document.getElementById("error").innerText = "";
 
-            ZOHO.CRM.FUNCTIONS.execute({
-                fname: "testcadenceenroll",
-                arguments: JSON.stringify({ leadId: leadId, cadenceName: selected })
-            }).then(function(response) {
-                document.getElementById("status").innerText = "Response: " + JSON.stringify(response);
-            }).catch(function(err) {
-                document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
+            var url = "https://www.zohoapis.com/crm/v7/functions/testcadenceenroll/actions/execute?auth_type=apikey&zapikey=1003.96d73adf130a5d722d41627002460fc8.f1a9a24639a41e248aee863fe1c2fc00&leadId=" + encodeURIComponent(leadId) + "&cadenceName=" + encodeURIComponent(selected);
+
+            fetch(url, { method: "GET" })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                document.getElementById("status").innerText = "Done: " + JSON.stringify(data);
+            })
+            .catch(function(err) {
+                document.getElementById("error").innerText = "Fetch error: " + err.message;
             });
         }
     </script>
