@@ -1,8 +1,79 @@
-setTimeout(function() {
-    var msg = "";
-    msg += "ZOHO: " + (typeof ZOHO) + " | ";
-    if (typeof ZOHO !== 'undefined') {
-        msg += "embeddedApp: " + (typeof ZOHO.embeddedApp) + " | ";
-    }
-    document.getElementById("status").innerText = msg;
-}, 3000);
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Start Cadence</title>
+    <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; margin: 0; }
+        h3 { color: #1F4E79; margin-bottom: 16px; font-size: 16px; }
+        select { width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+        button { padding: 8px 20px; background: #2E75B6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        button:hover { background: #1F4E79; }
+        #status { margin-top: 16px; font-size: 13px; color: #375623; }
+        #error { margin-top: 16px; font-size: 13px; color: #C55A11; }
+    </style>
+</head>
+<body>
+    <h3>Start Cadence</h3>
+    <select id="cadenceSelect">
+        <option value="">-- Select a Cadence --</option>
+        <option value="CTA Campaign 1: The Emergency Audit">CTA Campaign 1: The Emergency Audit</option>
+        <option value="CTA Campaign 2: The Competitive Displacement">CTA Campaign 2: The Competitive Displacement</option>
+        <option value="CTA Campaign 3: The Compliance Trigger">CTA Campaign 3: The Compliance Trigger</option>
+        <option value="File Audit: B-EM-PM: Post-Meeting Follow-Up">File Audit: B-EM-PM: Post-Meeting Follow-Up</option>
+        <option value="File Audit: B-EM-RE: Re-Engagement / Win-Back">File Audit: B-EM-RE: Re-Engagement / Win-Back</option>
+        <option value="File Audit: B-EM-RR: Referral Request">File Audit: B-EM-RR: Referral Request</option>
+        <option value="Title Research - Enterprise Parents Segment">Title Research - Enterprise Parents Segment</option>
+        <option value="Title Research - Michigan Regional Segment">Title Research - Michigan Regional Segment</option>
+        <option value="Title Research - No / Unknown Tier">Title Research - No / Unknown Tier</option>
+        <option value="Title Research - Post-Meeting Follow-Up Tasks: A-EM-PM">Title Research - Post-Meeting Follow-Up Tasks: A-EM-PM</option>
+        <option value="Title Research - Post-Sale A-EM-RR: Referral Request">Title Research - Post-Sale A-EM-RR: Referral Request</option>
+        <option value="Title Research - Re-Engagement / Win-Back - Dena">Title Research - Re-Engagement / Win-Back - Dena</option>
+        <option value="Title Research - Transmission Specialists Segment">Title Research - Transmission Specialists Segment</option>
+    </select>
+    <button onclick="startCadence()">Start Cadence</button>
+    <div id="status"></div>
+    <div id="error"></div>
+
+    <script>
+        var leadId = "";
+
+        setTimeout(function() {
+            document.getElementById("status").innerText = 
+                "ZOHO: " + (typeof ZOHO) + 
+                " | embeddedApp: " + (typeof ZOHO !== 'undefined' ? typeof ZOHO.embeddedApp : 'n/a');
+        }, 3000);
+
+        ZOHO.embeddedApp.on("PageLoad", function(data) {
+            leadId = data.EntityId;
+            document.getElementById("status").innerText = "Lead loaded: " + leadId;
+        });
+
+        ZOHO.embeddedApp.init();
+
+        function startCadence() {
+            var selected = document.getElementById("cadenceSelect").value;
+            if (!selected) {
+                document.getElementById("error").innerText = "Please select a cadence.";
+                return;
+            }
+            if (!leadId) {
+                document.getElementById("error").innerText = "Lead ID not loaded. Please close and reopen.";
+                return;
+            }
+            document.getElementById("status").innerText = "Starting cadence...";
+            document.getElementById("error").innerText = "";
+
+            ZOHO.CRM.API.executeFunction({
+                fname: "TestCadenceEnroll",
+                args: { leadId: leadId, cadenceName: selected }
+            }).then(function(response) {
+                document.getElementById("status").innerText = "Cadence started: " + selected;
+            }).catch(function(err) {
+                document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
+            });
+        }
+    </script>
+</body>
+</html>
