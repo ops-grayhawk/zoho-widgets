@@ -39,12 +39,6 @@
     <script>
         var leadId = "";
 
-        setTimeout(function() {
-            document.getElementById("status").innerText = 
-                "ZOHO: " + (typeof ZOHO) + 
-                " | embeddedApp: " + (typeof ZOHO !== 'undefined' ? typeof ZOHO.embeddedApp : 'n/a');
-        }, 3000);
-
         ZOHO.embeddedApp.on("PageLoad", function(data) {
             leadId = data.EntityId;
             document.getElementById("status").innerText = "Lead loaded: " + leadId;
@@ -65,14 +59,14 @@
             document.getElementById("status").innerText = "Starting cadence...";
             document.getElementById("error").innerText = "";
 
-            ZOHO.CRM.API.executeFunction({
-    fname: "TestCadenceEnroll",
-    args: { leadId: leadId, cadenceName: selected }
-}).then(function(response) {
-    document.getElementById("status").innerText = "Response: " + JSON.stringify(response);
-}).catch(function(err) {
-    document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
-});
+            ZOHO.CRM.FUNCTIONS.execute({
+                fname: "testcadenceenroll",
+                arguments: JSON.stringify({ leadId: leadId, cadenceName: selected })
+            }).then(function(response) {
+                document.getElementById("status").innerText = "Response: " + JSON.stringify(response);
+            }).catch(function(err) {
+                document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
+            });
         }
     </script>
 </body>
