@@ -67,7 +67,19 @@
             }).catch(function(err) {
                 document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
             });
+      ZOHO.embeddedApp.on("PageLoad", function(data) {
+    leadId = data.EntityId;
+    document.getElementById("status").innerText = "Lead loaded: " + leadId;
+});
+
+ZOHO.embeddedApp.init();
+
+// Debug — check if ZOHO object exists
+setTimeout(function() {
+    document.getElementById("error").innerText = "ZOHO defined: " + (typeof ZOHO !== 'undefined') + " | embeddedApp: " + (typeof ZOHO.embeddedApp !== 'undefined');
+}, 2000);
         }
+    
     </script>
 </body>
 </html>
