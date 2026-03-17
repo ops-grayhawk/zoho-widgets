@@ -66,13 +66,13 @@
             document.getElementById("error").innerText = "";
 
             ZOHO.CRM.API.executeFunction({
-                fname: "TestCadenceEnroll",
-                args: { leadId: leadId, cadenceName: selected }
-            }).then(function(response) {
-                document.getElementById("status").innerText = "Cadence started: " + selected;
-            }).catch(function(err) {
-                document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
-            });
+    fname: "TestCadenceEnroll",
+    args: { leadId: leadId, cadenceName: selected }
+}).then(function(response) {
+    document.getElementById("status").innerText = "Response: " + JSON.stringify(response);
+}).catch(function(err) {
+    document.getElementById("error").innerText = "Error: " + JSON.stringify(err);
+});
         }
     </script>
 </body>
